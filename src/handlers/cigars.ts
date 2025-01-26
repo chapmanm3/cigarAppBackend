@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { createCigarQuery, getCigarsQuery } from "../dbQueries/cigarsQueries";
 
 export async function getAllCigarsHandler(req: Request, res: Response) {
+  console.log("UID: ", req.header("uid"))
   const cigars = await getCigarsQuery()
   res.json(cigars)
 }

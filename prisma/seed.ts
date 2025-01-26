@@ -6,27 +6,40 @@ const cigarData: Cigar[] = [{
   name: 'TestCigar1',
   description: 'This is a test cigar description',
   id: 1,
-  image: ''
+  image: '',
+  brand: '',
+  humidorId: null,
+  userId: 1
 }, {
   name: 'TestCigar2',
   description: 'This is a test cigar description',
   id: 2,
-  image: ''
+  image: '',
+  brand: '',
+  humidorId: null,
+  userId: 1
 }, {
   name: 'TestCigar3',
   description: 'This is a test cigar description',
   id: 3,
-  image: ''
+  image: '',
+  brand: '',
+  humidorId: null,
+  userId: 1
 }]
 
-async function main() {
-  console.log(`Start seeding ...`)
+async function createCigars() {
   for (const c of cigarData) {
     const cigar = await prisma.cigar.create({
       data: c,
     })
     console.log(`Created cigar with id: ${cigar.id}`)
   }
+}
+
+async function main() {
+  console.log(`Start seeding ...`)
+  await createCigars()
   console.log(`Seeding finished.`)
 }
 
