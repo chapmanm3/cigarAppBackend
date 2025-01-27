@@ -2,9 +2,9 @@ import { addCigarHandler, getAllCigarsHandler } from "./src/handlers/cigars";
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors'
-import { initializeApp, applicationDefault } from "firebase-admin/app";
+import { initializeApp } from "firebase-admin/app";
 import { auth, credential } from "firebase-admin";
-const serviceAccount = require("./firebaseServerKey/chapmanm3-cigarapp-firebase-adminsdk-9fp5l-1f5dd70a5f.json")
+const serviceAccount = require("./firebaseServerKey/firebaseServiceKey.json")
 
 //Init firebase admin
 const fireBase = initializeApp({
@@ -15,7 +15,6 @@ const firebaseAuth = auth()
 
 async function authMiddleware(req: Request, res: Response, next: () => void) {
   const idToken = req.header("id-token")
-  console.log("Request Headers: ", req.header("id-token"))
 
   if (!idToken) {
     res.status(404).json('No id token header provided')

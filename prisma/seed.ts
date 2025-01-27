@@ -9,7 +9,7 @@ const cigarData: Cigar[] = [{
   image: '',
   brand: '',
   humidorId: null,
-  userId: 1
+  userId: "1"
 }, {
   name: 'TestCigar2',
   description: 'This is a test cigar description',
@@ -17,7 +17,7 @@ const cigarData: Cigar[] = [{
   image: '',
   brand: '',
   humidorId: null,
-  userId: 1
+  userId: "1"
 }, {
   name: 'TestCigar3',
   description: 'This is a test cigar description',
@@ -25,7 +25,7 @@ const cigarData: Cigar[] = [{
   image: '',
   brand: '',
   humidorId: null,
-  userId: 1
+  userId: "1"
 }]
 
 async function createCigars() {
