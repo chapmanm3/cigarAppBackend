@@ -57,8 +57,6 @@ app.use(bodyParser.json());
 app.use(cors())
 app.use(authMiddleware)
 
-app.options("*", cors())
-
 app.get('/cigars', (req, res) => getAllCigarsHandler(req, res));
 
 app.post('/createCigar', (req, res) => addCigarHandler(req, res))
