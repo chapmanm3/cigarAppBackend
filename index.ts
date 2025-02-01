@@ -57,7 +57,7 @@ app.use(bodyParser.json());
 app.use(cors())
 app.use(authMiddleware)
 
-app.use
+app.options("*", cors())
 
 app.get('/cigars', (req, res) => getAllCigarsHandler(req, res));
 
