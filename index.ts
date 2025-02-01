@@ -2,16 +2,28 @@ import { addCigarHandler, getAllCigarsHandler } from "./src/handlers/cigars";
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors'
-import { initializeApp } from "firebase-admin/app";
-import { auth, credential } from "firebase-admin";
-const serviceAccount = require("./firebaseServerKey/firebaseServiceKey.json")
+import { createClient } from "@supabase/supabase-js";
+import { env } from "process";
+import invariant from "tiny-invariant";
+import { jwtVerify } from "jose";
 
-//Init firebase admin
-const fireBase = initializeApp({
-  credential: credential.cert(serviceAccount)
+const supabaseUrl = env.SUPABASE_URL;
+const supabaseKey = env.SUPABASE_KEY;
+const supabaseJWTSecret = new TextEncoder().encode(env.SUPABASE_JWT_SECRET);
+
+invariant(supabaseUrl)
+invariant(supabaseKey)
+invariant(supabaseJWTSecret)
+
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
 })
 
-const firebaseAuth = auth()
+// Access auth admin api
+const adminAuthClient = supabase.auth.admin
 
 async function authMiddleware(req: Request, res: Response, next: () => void) {
   const idToken = req.header("id-token")
@@ -21,8 +33,20 @@ async function authMiddleware(req: Request, res: Response, next: () => void) {
     return
   }
 
-  const { uid } = await firebaseAuth.verifyIdToken(idToken)
-  req.headers['uid'] = uid
+  const { payload } = await jwtVerify(idToken, supabaseJWTSecret)
+
+  invariant(payload.sub)
+
+  const userResponse = await adminAuthClient.getUserById(payload.sub)
+  const { user } = userResponse.data
+
+  if (!user) {
+    console.error(userResponse)
+    res.status(500).json("Server Error")
+    return
+  }
+
+  req.headers['uid'] = user?.id
   next()
 }
 
