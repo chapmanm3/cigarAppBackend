@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node index.ts",
-    "build": "prisma migrate dev && tsc"
+    "dev": "ts-node index.ts"
   },
   "author": "",
   "license": "ISC",
