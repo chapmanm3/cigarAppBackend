@@ -9,24 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCigarsQuery = getCigarsQuery;
-exports.createCigarQuery = createCigarQuery;
+exports.getHumidorsQuery = getHumidorsQuery;
+exports.createHumidorQuery = createHumidorQuery;
 const db_1 = require("./db");
-function getCigarsQuery(_a) {
+function getHumidorsQuery(_a) {
     return __awaiter(this, arguments, void 0, function* ({ uid }) {
-        const cigars = yield db_1.prismaClient.cigar.findMany({
+        const humidors = yield db_1.prismaClient.humidor.findMany({
             where: {
                 userId: uid
             }
         });
-        return cigars;
+        return humidors;
     });
 }
-function createCigarQuery(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ cigar, uid }) {
-        const createdCigar = yield db_1.prismaClient.cigar.create({
-            data: Object.assign(Object.assign({}, cigar), { userId: uid })
+function createHumidorQuery(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ humidor, uid }) {
+        const createdHumidor = yield db_1.prismaClient.humidor.create({
+            data: Object.assign(Object.assign({}, humidor), { userId: uid })
         });
-        return createdCigar.id;
+        return createdHumidor.id;
     });
 }

@@ -1,9 +1,8 @@
-import { Cigar, PrismaClient } from "@prisma/client";
+import { Cigar } from "@prisma/client";
+import { prismaClient } from './db'
 
-const prisma = new PrismaClient();
-
-export function getCigarsQuery({ uid }: { uid: string }) {
-  const cigars = prisma.cigar.findMany({
+export async function getCigarsQuery({ uid }: { uid: string }) {
+  const cigars = await prismaClient.cigar.findMany({
     where: {
       userId: uid
     }
@@ -12,7 +11,7 @@ export function getCigarsQuery({ uid }: { uid: string }) {
 }
 
 export async function createCigarQuery({ cigar, uid }: { cigar: Cigar, uid: string }) {
-  const createdCigar = await prisma.cigar.create({
+  const createdCigar = await prismaClient.cigar.create({
     data: {
       ...cigar,
       userId: uid

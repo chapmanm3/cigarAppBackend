@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const cigars_1 = require("./src/handlers/cigars");
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
@@ -50,7 +49,7 @@ function authMiddleware(req, res, next) {
             res.status(500).json("Server Error");
             return;
         }
-        req.headers['uid'] = user === null || user === void 0 ? void 0 : user.id;
+        req.user = user;
         next();
     });
 }
@@ -59,10 +58,12 @@ const port = 3000;
 app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)());
 app.use(authMiddleware);
-app.get('/cigars', (req, res) => (0, cigars_1.getAllCigarsHandler)(req, res));
-app.post('/createCigar', (req, res) => (0, cigars_1.addCigarHandler)(req, res));
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.get('/cigars', (req, res) => getAllCigarsHandler(req, res));
+app.post('/createCigar', (req, res) => addCigarHandler(req, res));
+app.get('/humidors', (req, res) => getHumidorsHandles(req, res));
+app.post('/createHumidor', (req, res) => addHumidorHandler(req, res));
+app.get('/healthCheck', (req, res) => {
+    res.sendStatus(200);
 });
 app.listen(port, () => {
     console.log(`cigarApp backend listening on port ${port}`);

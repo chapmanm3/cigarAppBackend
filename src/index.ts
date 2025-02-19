@@ -1,4 +1,3 @@
-import { addCigarHandler, getAllCigarsHandler } from "./src/handlers/cigars";
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors'
@@ -6,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 import { env } from "process";
 import invariant from "tiny-invariant";
 import { jwtVerify } from "jose";
+import { addCigarHandler, getAllCigarsHandler } from './handlers/cigars';
+import { addHumidorHandler, getHumidorsHandler } from './handlers/humidors';
 
 const supabaseUrl = env.SUPABASE_URL;
 const supabaseKey = env.SUPABASE_KEY;
@@ -46,7 +47,7 @@ async function authMiddleware(req: Request, res: Response, next: () => void) {
     return
   }
 
-  req.headers['uid'] = user?.id
+  req.user = user
   next()
 }
 
@@ -61,8 +62,12 @@ app.get('/cigars', (req, res) => getAllCigarsHandler(req, res));
 
 app.post('/createCigar', (req, res) => addCigarHandler(req, res))
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+app.get('/humidors', (req, res) => getHumidorsHandler(req, res))
+
+app.post('/createHumidor', (req, res) => addHumidorHandler(req, res))
+
+app.get('/healthCheck', (req, res) => {
+  res.sendStatus(200)
 })
 
 app.listen(port, () => {

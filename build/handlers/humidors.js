@@ -9,37 +9,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllCigarsHandler = getAllCigarsHandler;
-exports.addCigarHandler = addCigarHandler;
-const cigarsQueries_1 = require("../dbQueries/cigarsQueries");
-function getAllCigarsHandler(req, res) {
+exports.getHumidorsHandler = getHumidorsHandler;
+exports.addHumidorHandler = addHumidorHandler;
+const humidorsQueries_1 = require("../dbQueries/humidorsQueries");
+function getHumidorsHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = req.user;
         if (!user) {
             res.status(500).json("Server Error: user not found");
             return;
         }
-        const cigars = yield (0, cigarsQueries_1.getCigarsQuery)({ uid: user.id });
+        const cigars = yield (0, humidorsQueries_1.getHumidorsQuery)({ uid: user.id });
         res.json(cigars);
     });
 }
-function addCigarHandler(req, res) {
+function addHumidorHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = req.user;
-        if (!req.body || !req.body.cigar) {
-            res.status(400);
-            res.send("Request missing or malformed cigar object");
-            return;
-        }
         if (!user) {
             res.status(500).json("Server Error: user not found");
             return;
         }
-        const newCigarId = yield (0, cigarsQueries_1.createCigarQuery)({
-            cigar: req.body.cigar,
+        if (!req.body || !req.body.humidor) {
+            res.status(400);
+            res.send("Request missing humidor object");
+            return;
+        }
+        const newHumidorId = yield (0, humidorsQueries_1.createHumidorQuery)({
+            humidor: req.body.humidor,
             uid: user.id
         });
         res.status(200);
-        res.send(`Cigar: ${newCigarId} created.`);
+        res.send(`Created Humidor ID: ${newHumidorId}`);
     });
 }
