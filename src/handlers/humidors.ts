@@ -12,7 +12,6 @@ export async function getHumidorsHandler(req: Request, res: Response) {
 }
 
 export async function addHumidorHandler(req: Request, res: Response) {
-
   const user = req.user;
   if (!user) {
     res.status(500).json("Server Error: user not found")
