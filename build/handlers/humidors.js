@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getHumidorsHandler = getHumidorsHandler;
 exports.addHumidorHandler = addHumidorHandler;
 const humidorsQueries_1 = require("../dbQueries/humidorsQueries");
+const humidorSchemas_1 = require("../schemas/humidorSchemas");
 function getHumidorsHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = req.user;
@@ -30,16 +31,20 @@ function addHumidorHandler(req, res) {
             res.status(500).json("Server Error: user not found");
             return;
         }
-        if (!req.body || !req.body.humidor) {
-            res.status(400);
-            res.send("Request missing humidor object");
-            return;
+        try {
+            const parsedHumidor = humidorSchemas_1.createHumidorRequestSchema.parse(req.body);
+            const newHumidorId = yield (0, humidorsQueries_1.createHumidorQuery)({
+                humidor: Object.assign({}, parsedHumidor.humidor),
+                uid: user.id
+            });
+            res.status(200);
+            res.send(`Created Humidor ID: ${newHumidorId}`);
         }
-        const newHumidorId = yield (0, humidorsQueries_1.createHumidorQuery)({
-            humidor: req.body.humidor,
-            uid: user.id
-        });
-        res.status(200);
-        res.send(`Created Humidor ID: ${newHumidorId}`);
+        catch (err) {
+            res.status(400).json({
+                message: "Validation failed",
+                errors: err
+            });
+        }
     });
 }

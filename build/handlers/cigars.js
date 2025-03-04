@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllCigarsHandler = getAllCigarsHandler;
 exports.addCigarHandler = addCigarHandler;
 const cigarsQueries_1 = require("../dbQueries/cigarsQueries");
+const cigarSchemas_1 = require("../schemas/cigarSchemas");
 function getAllCigarsHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = req.user;
@@ -26,20 +27,24 @@ function getAllCigarsHandler(req, res) {
 function addCigarHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = req.user;
-        if (!req.body || !req.body.cigar) {
-            res.status(400);
-            res.send("Request missing or malformed cigar object");
-            return;
-        }
         if (!user) {
             res.status(500).json("Server Error: user not found");
             return;
         }
-        const newCigarId = yield (0, cigarsQueries_1.createCigarQuery)({
-            cigar: req.body.cigar,
-            uid: user.id
-        });
-        res.status(200);
-        res.send(`Cigar: ${newCigarId} created.`);
+        try {
+            const parsedCigar = cigarSchemas_1.createCigarRequestBodySchema.parse(req.body);
+            const newCigarId = yield (0, cigarsQueries_1.createCigarQuery)({
+                cigar: Object.assign({}, parsedCigar.cigar),
+                uid: user.id
+            });
+            res.status(200);
+            res.send(`Cigar: ${newCigarId} created.`);
+        }
+        catch (error) {
+            res.status(400).json({
+                message: 'Validation error',
+                errors: error,
+            });
+        }
     });
 }

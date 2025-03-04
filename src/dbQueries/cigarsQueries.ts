@@ -1,5 +1,5 @@
-import { Cigar } from "@prisma/client";
 import { prismaClient } from './db'
+import { CreateCigarSchema } from "../schemas/cigarSchemas";
 
 export async function getCigarsQuery({ uid }: { uid: string }) {
   const cigars = await prismaClient.cigar.findMany({
@@ -10,7 +10,7 @@ export async function getCigarsQuery({ uid }: { uid: string }) {
   return cigars
 }
 
-export async function createCigarQuery({ cigar, uid }: { cigar: Cigar, uid: string }) {
+export async function createCigarQuery({ cigar, uid }: { cigar: CreateCigarSchema, uid: string }) {
   const createdCigar = await prismaClient.cigar.create({
     data: {
       ...cigar,

@@ -1,5 +1,6 @@
 import { Humidor } from '@prisma/client'
 import { prismaClient } from './db'
+import { CreateHumidorSchema } from '../schemas/humidorSchemas'
 
 export async function getHumidorsQuery({ uid }: { uid: string }) {
   const humidors = await prismaClient.humidor.findMany({
@@ -11,7 +12,7 @@ export async function getHumidorsQuery({ uid }: { uid: string }) {
   return humidors
 }
 
-export async function createHumidorQuery({ humidor, uid }: { humidor: Humidor, uid: string }) {
+export async function createHumidorQuery({ humidor, uid }: { humidor: CreateHumidorSchema, uid: string }) {
   const createdHumidor = await prismaClient.humidor.create({
     data: {
       ...humidor,
