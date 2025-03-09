@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
-import { createCigarQuery, getCigarsQuery } from "../dbQueries/cigarsQueries";
-import { createCigarRequestBodySchema } from "../schemas/cigarSchemas";
+import { createCigarQuery, deleteCigarQuery, getCigarDetailsQuery, getCigarsQuery, updateCigarQuery } from "../dbQueries/cigarsQueries";
+import { createCigarRequestBodySchema, updateCigarRequestBodySchema } from "../schemas/cigarSchemas";
+import invariant from "tiny-invariant";
 
 export async function getAllCigarsHandler(req: Request, res: Response) {
   const user = req.user
-  if (!user) {
-    res.status(500).json("Server Error: user not found")
-    return
-  }
+  invariant(user, "User should be defined at this point")
 
   const cigars = await getCigarsQuery({ uid: user.id })
   res.json(cigars)
@@ -16,10 +14,7 @@ export async function getAllCigarsHandler(req: Request, res: Response) {
 export async function addCigarHandler(req: Request, res: Response) {
   const user = req.user
 
-  if (!user) {
-    res.status(500).json("Server Error: user not found")
-    return
-  }
+  invariant(user, "User should be defined at this point")
 
   try {
     const parsedCigar = createCigarRequestBodySchema.parse(req.body);
@@ -37,4 +32,51 @@ export async function addCigarHandler(req: Request, res: Response) {
       errors: error,
     });
   }
+}
+
+export async function updateCigarHandler(req: Request, res: Response) {
+  const user = req.user
+
+  invariant(user, "User should be defined at this point")
+
+  try {
+    const parsedCigar = updateCigarRequestBodySchema.parse(req.body)
+    const updatedCigar = await updateCigarQuery({
+      cigar: parsedCigar.cigar,
+      uid: user.id
+    })
+
+  } catch (err) {
+    res.status(400).json({
+      message: "Validation error",
+      errors: err
+    })
+  }
+
+}
+
+export async function getCigarDetailsHandler(req: Request, res: Response) {
+  const user = req.user;
+  const { cigarId } = req.params;
+
+  invariant(user, "User should be defined at this point")
+
+  const cigar = await getCigarDetailsQuery({
+    cigarId: parseInt(cigarId),
+    uid: user.id
+  })
+  res.json(cigar)
+}
+
+export async function deleteCigarHandler(req: Request, res: Response) {
+  const user = req.user
+  const { cigarId } = req.params
+
+  invariant(user, "User should be defined at this point")
+
+  const deletedId = await deleteCigarQuery({
+    cigarId: parseInt(cigarId),
+    uid: user.id
+  })
+  res.json(deletedId)
 }

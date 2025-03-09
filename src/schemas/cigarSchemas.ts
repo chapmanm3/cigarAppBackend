@@ -8,6 +8,16 @@ const createCigarSchema = z.object({
   description: stringSchema.optional(),
 })
 
+const updateCigarSchema = createCigarSchema.extend({
+  id: z.number()
+})
+
+export type UpdateCigarSchema = z.infer<typeof updateCigarSchema>
+
+export const updateCigarRequestBodySchema = z.object({
+  cigar: updateCigarSchema
+})
+
 export const createCigarRequestBodySchema = z.object({
   cigar: createCigarSchema
 })

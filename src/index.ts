@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 import { env } from "process";
 import invariant from "tiny-invariant";
 import { jwtVerify } from "jose";
-import { addCigarHandler, getAllCigarsHandler } from './handlers/cigars';
+import { addCigarHandler, deleteCigarHandler, getAllCigarsHandler, getCigarDetailsHandler, updateCigarHandler } from './handlers/cigars';
 import { addHumidorHandler, getHumidorsHandler } from './handlers/humidors';
 
 const supabaseUrl = env.SUPABASE_URL;
@@ -59,6 +59,12 @@ app.use(cors())
 app.use(authMiddleware)
 
 app.get('/cigars', (req, res) => getAllCigarsHandler(req, res));
+
+app.get('/cigar/:cigarId', (req, res) => getCigarDetailsHandler(req, res));
+
+app.delete('/cigar/:cigarId', (req, res) => deleteCigarHandler(req, res));
+
+app.post('/cigar/:cigarId', (req, res) => updateCigarHandler(req, res))
 
 app.post('/createCigar', (req, res) => addCigarHandler(req, res))
 
