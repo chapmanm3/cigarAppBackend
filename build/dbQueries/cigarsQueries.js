@@ -11,6 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCigarsQuery = getCigarsQuery;
 exports.createCigarQuery = createCigarQuery;
+exports.updateCigarQuery = updateCigarQuery;
+exports.getCigarDetailsQuery = getCigarDetailsQuery;
+exports.deleteCigarQuery = deleteCigarQuery;
 const db_1 = require("./db");
 function getCigarsQuery(_a) {
     return __awaiter(this, arguments, void 0, function* ({ uid }) {
@@ -28,5 +31,39 @@ function createCigarQuery(_a) {
             data: Object.assign(Object.assign({}, cigar), { userId: uid })
         });
         return createdCigar.id;
+    });
+}
+function updateCigarQuery(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ cigar, uid }) {
+        const updatedCigar = yield db_1.prismaClient.cigar.update({
+            where: {
+                id: cigar.id,
+                userId: uid
+            },
+            data: Object.assign({}, cigar)
+        });
+        return updatedCigar.id;
+    });
+}
+function getCigarDetailsQuery(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ cigarId, uid }) {
+        const cigarDetails = yield db_1.prismaClient.cigar.findUnique({
+            where: {
+                userId: uid,
+                id: cigarId
+            }
+        });
+        return cigarDetails;
+    });
+}
+function deleteCigarQuery(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ cigarId, uid }) {
+        const deletedCigar = yield db_1.prismaClient.cigar.delete({
+            where: {
+                id: cigarId,
+                userId: uid
+            }
+        });
+        return deletedCigar.id;
     });
 }
