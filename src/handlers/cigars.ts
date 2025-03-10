@@ -41,10 +41,13 @@ export async function updateCigarHandler(req: Request, res: Response) {
 
   try {
     const parsedCigar = updateCigarRequestBodySchema.parse(req.body)
-    const updatedCigar = await updateCigarQuery({
+    const updatedCigarId = await updateCigarQuery({
       cigar: parsedCigar.cigar,
       uid: user.id
     })
+
+    res.status(200)
+    res.send(`Cigar ${updatedCigarId} updated successfully`)
 
   } catch (err) {
     res.status(400).json({

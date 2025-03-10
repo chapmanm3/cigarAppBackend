@@ -44,4 +44,22 @@ describe('Cigars Api', () => {
     }
     expect(cigarQueries.createCigarQuery).toHaveBeenCalledWith(expectedFuncCall)
   })
+
+  test("Update Cigar", async () => {
+    const updatedCigar = {
+      id: 1,
+      name: "updateName"
+    }
+
+    await request(app).post("/cigar/1").send({
+      cigar: updatedCigar
+    })
+
+    const expectedArgs = {
+      cigar: updatedCigar,
+      uid: "1"
+    }
+
+    expect(cigarQueries.updateCigarQuery).toHaveBeenCalledWith(expectedArgs)
+  })
 })
